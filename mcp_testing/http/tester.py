@@ -17,7 +17,7 @@ from urllib.parse import urlparse
 class MCPHttpTester:
     """Class to test an MCP HTTP server implementation."""
     
-    def __init__(self, url, debug=False):
+    def __init__(self, url, debug=False, bearer_token = None):
         """
         Initialize the tester with the server URL.
         
@@ -36,16 +36,25 @@ class MCPHttpTester:
         # Session information
         self.session_id = None
         self.initialized = False
+        self.bearer_token = bearer_token
         
         # Protocol information
         self.protocol_version = "2025-03-26"
         
         # Create a persistent session for all requests
         self.request_session = requests.Session()
-        self.request_session.headers.update({
+        # Common headers
+        headers = {
             "Content-Type": "application/json",
+            "Origin": "http://localhost",
             "Accept": "application/json, text/event-stream"
-        })
+        }
+
+        # Add Authorization header only if bearer_token is provided
+        if self.bearer_token is not None:
+            headers["Authorization"] = f"Bearer {self.bearer_token}"
+
+        self.request_session.headers.update(headers)
         
         self.log(f"MCP HTTP Tester initialized for {url}")
         self.log(f"Host: {self.host}, Path: {self.path}")

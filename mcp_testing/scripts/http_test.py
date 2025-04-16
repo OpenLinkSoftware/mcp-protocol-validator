@@ -35,6 +35,10 @@ def main():
             help="Protocol version to use (default: 2025-03-26)"
         )
         parser.add_argument(
+            "--bearer-token", 
+            help="Protocol version to use (default: 2025-03-26)"
+        )
+        parser.add_argument(
             "--debug", 
             action="store_true", 
             help="Enable debug logging"
@@ -71,7 +75,7 @@ def main():
             return 1
         
         # Run the HTTP tests
-        tester = MCPHttpTester(args.server_url, args.debug)
+        tester = MCPHttpTester(args.server_url, args.debug, args.bearer_token)
         tester.protocol_version = args.protocol_version
         
         success = tester.run_all_tests()
